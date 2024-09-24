@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CompLab1": {
+      "commandName": "Project",
+      "commandLineArgs": "T output.txt output_trans.txt"
+    }
+  }
+}

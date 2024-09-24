@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CompLab2": {
+      "commandName": "Project",
+      "commandLineArgs": "inputExpr.txt tokens.txt symbols.txt"
+    }
+  }
+}
