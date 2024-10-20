@@ -14,30 +14,29 @@ namespace CompLab2
     /// <summary>
     /// Вид токена
     /// </summary>
-    public string Type { get; }
+    public LexicalTypesEnum Type { get; }
 
     /// <summary>
     /// Порядок токена для переменных
     /// </summary>
     public string Value { get; }
 
-    /// <summary>
-    /// Описание токена
-    /// </summary>
-    public string Description { get; }
+
+    public SymbolsDic Symbols { get; set; }
 
     /// <summary>
     /// Конструктор
     /// </summary>
     /// <param name="type">Вид токена</param>
-    /// <param name="description">Описание токена</param>
     /// <param name="value">Порядок токена для перемнных</param>
-    public Token(string type, string description, string value = null)
+    public Token(LexicalTypesEnum type, string value = null, SymbolsDic symbolsDic = null)
     {
       Type = type;
       Value = value;
-      Description = description;
+      Symbols = symbolsDic;
     }
+
+  
 
     /// <summary>
     /// Переопредленный метод toString()
@@ -45,7 +44,9 @@ namespace CompLab2
     /// <returns>Форматированная строка</returns>
     public override string ToString()
     {
-      return Value != null ? $"<{Type},{Value}> - {Description}" : $"<{Type}> - {Description}";
+      return Type == LexicalTypesEnum.Identifier 
+    ? $"<{Type},{Value}> - {Type.ToDetailedString()} {(Symbols != null ? Symbols.GetSymbolName(int.Parse(Value)) : "Символ не найден")}"
+    : $"<{Value}> - {Type.ToDetailedString()}";
     }
   }
 }

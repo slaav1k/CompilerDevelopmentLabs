@@ -51,6 +51,12 @@ namespace CompLab2
         {
           char currentChar = input[position];
 
+          if (char.IsWhiteSpace(currentChar))
+          {
+            position++;
+            continue;
+          }
+
           if (char.IsLetter(currentChar) || currentChar == '_')
           {
             HandleIdentifier(input);
@@ -68,7 +74,10 @@ namespace CompLab2
             throw new LexicalException($"Лексическая ошибка! Недопустимый символ '{currentChar}' на позиции {position + 1}");
           }
         }
-
+        foreach (var token in tokens)
+        {
+          token.Symbols = symbolsDic;
+        }
         return tokens;
       }
 
@@ -93,7 +102,7 @@ namespace CompLab2
         }
 
         int id = symbolsDic.AddSymbol(identifier);
-        tokens.Add(new Token("id", $"идентификатор с именем {identifier}", id.ToString()));
+        tokens.Add(new Token(LexicalTypesEnum.Identifier, id.ToString()));
       }
 
       /// <summary>
@@ -127,7 +136,8 @@ namespace CompLab2
         if (Regex.IsMatch(number, @"^\d+(\.\d+)?$"))
         {
           string description = hasDot ? "константа вещественного типа" : "константа целого типа";
-          tokens.Add(new Token(number, description));
+          var type = hasDot ? LexicalTypesEnum.RealConstant : LexicalTypesEnum.IntegerConstant;
+          tokens.Add(new Token(type, number));
         }
         else
         {
@@ -141,20 +151,21 @@ namespace CompLab2
       /// <param name="currentChar">Текущий символ</param>
       private static void HandleOperatorOrParenthesis(char currentChar)
       {
-        string description = currentChar switch
+        var type = currentChar switch
         {
-          '+' => "операция сложения",
-          '-' => "операция вычитания",
-          '*' => "операция умножения",
-          '/' => "операция деления",
-          '(' => "открывающая скобка",
-          ')' => "закрывающая скобка",
-          _ => "неизвестный символ"
+          '+' => LexicalTypesEnum.Addition,
+          '-' => LexicalTypesEnum.Subtraction,
+          '*' => LexicalTypesEnum.Multiplication,
+          '/' => LexicalTypesEnum.Division,
+          '(' => LexicalTypesEnum.OpenParenthesis,
+          ')' => LexicalTypesEnum.CloseParenthesis,
+          _ => LexicalTypesEnum.Unknown
         };
 
-        tokens.Add(new Token(currentChar.ToString(), description));
+        tokens.Add(new Token(type, currentChar.ToString()));
         position++;
       }
+
 
       /// <summary>
       /// Вернуть словарь идентификаторов

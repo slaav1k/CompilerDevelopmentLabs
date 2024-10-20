@@ -12,9 +12,9 @@ namespace CompLab2
   internal class SymbolsDic
   {
     /// <summary>
-    /// Словарь: идентификатор - порядковый номер
+    /// Словарь: порядковый номер - идентификатор
     /// </summary>
-    private Dictionary<string, int> symbols;
+    private Dictionary<int, string> symbols;
 
     /// <summary>
     /// Счетчик
@@ -26,7 +26,7 @@ namespace CompLab2
     /// </summary>
     public SymbolsDic()
     {
-      symbols = new Dictionary<string, int>();
+      symbols = new Dictionary<int, string>();
       counter = 1;
     }
 
@@ -37,21 +37,41 @@ namespace CompLab2
     /// <returns>Порядковый номер</returns>
     public int AddSymbol(string name)
     {
-      if (!symbols.ContainsKey(name))
+      foreach (var pair in symbols)
       {
-        symbols[name] = counter++;
+        if (pair.Value == name)
+        {
+          return pair.Key; 
+        }
       }
 
-      return symbols[name];
+      symbols[counter] = name; 
+      return counter++;
+
     }
 
     /// <summary>
     /// Вернуть коллекцию
     /// </summary>
     /// <returns></returns>
-    public Dictionary<string, int> GetSymbols()
+    public Dictionary<int, string> GetSymbols()
     {
       return symbols;
+    }
+
+
+    /// <summary>
+    /// Вернуть название символа по его порядковому номеру
+    /// </summary>
+    /// <param name="id">Порядковый номер символа</param>
+    /// <returns>Название идентификатора</returns>
+    public string GetSymbolName(int id)
+    {
+      if (symbols.TryGetValue(id, out string name))
+      {
+        return name;
+      }
+      return $"Символ с порядковым номером {id} не найден.";
     }
   }
 }

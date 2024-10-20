@@ -52,7 +52,8 @@ namespace CompLab2
     /// <returns>Содержимое файла</returns>
     public static string ReadInputFile(string filename)
     {
-      return File.ReadAllText(filename).Replace(" ", "").Replace("\t", "");
+      //return File.ReadAllText(filename).Replace(" ", "").Replace("\t", "");
+      return File.ReadAllText(filename);
     }
 
     /// <summary>
@@ -111,7 +112,7 @@ namespace CompLab2
       {
         foreach (var symbol in symbolsDic.GetSymbols())
         {
-          writer.WriteLine($"{symbol.Value} – {symbol.Key}");
+          writer.WriteLine($"{symbol.Key} – {symbol.Value}");
         }
       }
     }
