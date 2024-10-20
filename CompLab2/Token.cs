@@ -17,23 +17,29 @@ namespace CompLab2
     public LexicalTypesEnum Type { get; }
 
     /// <summary>
+    /// Значение токена для переменных
+    /// </summary>
+    //public string Value { get; }
+    public dynamic Value { get; }
+
+
+    //public SymbolsDic Symbols { get; set; }
+    /// <summary>
     /// Порядок токена для переменных
     /// </summary>
-    public string Value { get; }
-
-
-    public SymbolsDic Symbols { get; set; }
+    public int IdentifierID { get; set; }
 
     /// <summary>
     /// Конструктор
     /// </summary>
     /// <param name="type">Вид токена</param>
     /// <param name="value">Порядок токена для перемнных</param>
-    public Token(LexicalTypesEnum type, string value = null, SymbolsDic symbolsDic = null)
+    public Token(LexicalTypesEnum type, dynamic value, int identifierID = 0/*SymbolsDic symbolsDic = null*/)
     {
       Type = type;
       Value = value;
-      Symbols = symbolsDic;
+      //Symbols = symbolsDic;
+      IdentifierID = identifierID;
     }
 
   
@@ -45,7 +51,7 @@ namespace CompLab2
     public override string ToString()
     {
       return Type == LexicalTypesEnum.Identifier 
-    ? $"<{Type},{Value}> - {Type.ToDetailedString()} {(Symbols != null ? Symbols.GetSymbolName(int.Parse(Value)) : "Символ не найден")}"
+    ? $"<{Type},{IdentifierID}> - {Type.ToDetailedString()} {Value}"
     : $"<{Value}> - {Type.ToDetailedString()}";
     }
   }

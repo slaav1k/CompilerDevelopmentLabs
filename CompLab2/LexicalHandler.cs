@@ -74,10 +74,6 @@ namespace CompLab2
             throw new LexicalException($"Лексическая ошибка! Недопустимый символ '{currentChar}' на позиции {position + 1}");
           }
         }
-        foreach (var token in tokens)
-        {
-          token.Symbols = symbolsDic;
-        }
         return tokens;
       }
 
@@ -102,7 +98,7 @@ namespace CompLab2
         }
 
         int id = symbolsDic.AddSymbol(identifier);
-        tokens.Add(new Token(LexicalTypesEnum.Identifier, id.ToString()));
+        tokens.Add(new Token(LexicalTypesEnum.Identifier, identifier, id));
       }
 
       /// <summary>

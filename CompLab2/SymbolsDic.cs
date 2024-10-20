@@ -59,19 +59,5 @@ namespace CompLab2
       return symbols;
     }
 
-
-    /// <summary>
-    /// Вернуть название символа по его порядковому номеру
-    /// </summary>
-    /// <param name="id">Порядковый номер символа</param>
-    /// <returns>Название идентификатора</returns>
-    public string GetSymbolName(int id)
-    {
-      if (symbols.TryGetValue(id, out string name))
-      {
-        return name;
-      }
-      return $"Символ с порядковым номером {id} не найден.";
-    }
   }
 }
