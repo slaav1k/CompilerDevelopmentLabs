@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CompLab2": {
+      "commandName": "Project",
+      "commandLineArgs": "sem inputExpr.txt"
+    }
+  }
+}
