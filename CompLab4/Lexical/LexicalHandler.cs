@@ -135,8 +135,23 @@ namespace CompLabs
         }
 
 
-        int id = symbolsDic.AddSymbol(identifier, type);
-        tokens.Add(new Token(LexicalTypesEnum.Identifier, identifier, id, symbolsDic[id].Type));
+        //int id = symbolsDic.AddSymbol(identifier, type);
+        //tokens.Add(new Token(LexicalTypesEnum.Identifier, identifier, id, symbolsDic[id].Type));
+
+
+        int existingId = symbolsDic.AddSymbol(identifier, type);
+        if (existingId != -1) // Идентификатор уже существует
+        {
+          LexicalTypesEnum existingType = symbolsDic[existingId].Type;
+
+          if (existingType != type)
+          {
+            throw new SemanticException($"Семантическая ошибка: Идентификатор '{identifier}' уже существует с типом '{existingType.ToDescribString()}', а на позиции {start + 1} имеет тип '{type.ToDescribString()}'");
+          }
+        }
+
+        tokens.Add(new Token(LexicalTypesEnum.Identifier, identifier, existingId, symbolsDic[existingId].Type));
+
       }
 
       /// <summary>

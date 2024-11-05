@@ -59,7 +59,7 @@ namespace CompLabs
           SyntaxHandler syntaxHandler = new SyntaxHandler(tokens);
           SyntaxTree syntaxTree = syntaxHandler.Analyze();
 
-          SemanticHandler semanticHandler = new SemanticHandler(syntaxTree);
+          SemanticHandler semanticHandler = new SemanticHandler(syntaxTree, LexicalHandler.GetSymbolDictionary());
           WorkerWithFiles.WriteToFile(semanticFileName, syntaxTree);
         }
         else
