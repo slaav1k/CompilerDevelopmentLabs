@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "CompLab2": {
+      "commandName": "Project",
+      "commandLineArgs": "gen2 inputExpr.txt"
+    }
+  }
+}
