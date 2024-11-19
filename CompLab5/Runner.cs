@@ -81,9 +81,9 @@ namespace CompLabs
 
           GenereticHandler genereticHandler = new GenereticHandler(syntaxTree, symbolsDic);
 
-          String threeAddressCode = genereticHandler.GenerateThreeAddressCode();
+          List<Instruction> listInstructions = genereticHandler.GenerateThreeAddressCode();
 
-          WorkerWithFiles.WriteThreeAddressCodeToFile(threeAddressCode, generationFileName);
+          WorkerWithFiles.WriteThreeAddressCodeToFile(listInstructions, generationFileName);
 
           WorkerWithFiles.WriteSymbolsFile(symbolsFileName, symbolsDic);
         }
@@ -103,10 +103,10 @@ namespace CompLabs
 
           GenereticHandler genereticHandler = new GenereticHandler(syntaxTree, symbolsDic);
 
-          String posfixForm = genereticHandler.GeneratePostfixNotation();
+          List<Token> posfixForm = genereticHandler.GeneratePostfixNotation();
 
           WorkerWithFiles.WritePostfixFormToFile(posfixForm, generationFileName);
-
+          //Console.WriteLine(symbolsDic);
           WorkerWithFiles.WriteSymbolsFile(symbolsFileName, symbolsDic);
         }
         else

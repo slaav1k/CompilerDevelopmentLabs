@@ -131,15 +131,18 @@ namespace CompLabs
     /// </summary>
     /// <param name="threeAddressCode">Строка с трехадресным кодом.</param>
     /// <param name="fileName">Имя файла для записи.</param>
-    public static void WriteThreeAddressCodeToFile(string threeAddressCode, string fileName)
+    public static void WriteThreeAddressCodeToFile(List<Instruction> threeAddressCode, string fileName)
     {
-        File.WriteAllText(fileName, threeAddressCode);
+      var lines = threeAddressCode.Select(instruction => instruction.ToString()).ToList();
+      File.WriteAllLines(fileName, lines);
     }
 
 
-    public static void WritePostfixFormToFile(string postfixForm, string fileName)
+    public static void WritePostfixFormToFile(List<Token> postfixForm, string fileName)
     {
-      File.WriteAllText(fileName, postfixForm);
+      string line = string.Join("", postfixForm.Select(token => token.ToString().Split(" - ")[0]));
+
+      File.WriteAllText(fileName, line);
     }
   }
 

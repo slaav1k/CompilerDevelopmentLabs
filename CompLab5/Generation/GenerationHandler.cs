@@ -15,11 +15,15 @@ namespace CompLabs.Generation
     private readonly SyntaxTree syntaxTree;
     private SymbolsDic symbolsDic;
     private int tempVarCounter;
+    private List<Instruction> instructions;
+    private List<Token> postfixTokens;
 
     public GenereticHandler(SyntaxTree syntaxTree, SymbolsDic symbolsDic)
     {
       this.syntaxTree = syntaxTree;
       this.symbolsDic = symbolsDic;
+      this.instructions = new List<Instruction>();
+      this.postfixTokens = new List<Token>();
       tempVarCounter = 1;  // Начинаем с временной переменной T1
     }
 
@@ -27,42 +31,31 @@ namespace CompLabs.Generation
     /// Генерация трехадресного кода (GEN1)
     /// </summary>
     /// <returns>Трехадресный код</returns>
-    public string GenerateThreeAddressCode()
+    public List<Instruction> GenerateThreeAddressCode()
     {
       var codeBuilder = new StringBuilder();
-      TraverseExpression(syntaxTree.Root, codeBuilder);
-      return codeBuilder.ToString();
+      TraverseExpression(syntaxTree.Root);
+      return this.instructions;
     }
 
     /// <summary>
     /// Обход выражений и возвращение результата для трехадресного кода
     /// </summary>
-    /// <param name="node">Узел выражения</param>
-    /// <param name="codeBuilder">Строитель кода</param>
+    /// <param name="node">Узел выражения</param>\
     /// <returns>Результат вычислений</returns>
-    private string TraverseExpression(SyntaxTreeNode node, StringBuilder codeBuilder)
+    private Token TraverseExpression(SyntaxTreeNode node)
     {
       if (node == null)
-        return string.Empty;
+        return null;
 
       // Если узел является операцией
       if (IsOperator(node.Token) && node.Children.Count == 2)
       {
-        var leftResult = TraverseExpression(node.Children[0], codeBuilder);
-        var rightResult = TraverseExpression(node.Children[1], codeBuilder);
-
-        if (leftResult.Any(char.IsLetter))
-        {
-          leftResult = $"<id,{symbolsDic.AddSymbol(leftResult, LexicalTypesEnum.Unknown)}>";
-        }
-
-        if (rightResult.Any(char.IsLetter))
-        {
-          rightResult = $"<id,{symbolsDic.AddSymbol(rightResult, LexicalTypesEnum.Unknown)}>";
-        }
+        var leftResult = TraverseExpression(node.Children[0]);
+        var rightResult = TraverseExpression(node.Children[1]);
 
         // Генерируем временную переменную для текущего узла-операции
-        string tempVar = $"#T{tempVarCounter++}";
+        string tempVarName = $"#T{tempVarCounter++}";
         LexicalTypesEnum type = LexicalTypesEnum.IntType;
         if (node.Token.SubType == LexicalTypesEnum.IntType)
         {
@@ -73,25 +66,33 @@ namespace CompLabs.Generation
           type = LexicalTypesEnum.FloatType;
         }
 
-        int idTempVar = symbolsDic.AddSymbol(tempVar, type);
-        codeBuilder.AppendLine($"{GenerationInstructionsFromLexicalTypes.ToGetInstruction(node.Token.Type)} <id,{idTempVar}> {leftResult} {rightResult}");
+        int idTempVar = symbolsDic.AddSymbol(tempVarName, type);
 
+        Token tempVar = new Token(LexicalTypesEnum.Identifier, tempVarName, idTempVar, type);
+
+        Instruction instruction = new Instruction(node.Token.Type, tempVar, new List<Token> { leftResult, rightResult });
+        this.instructions.Add(instruction);
         return tempVar;
       }
       // Если узел является преобразованием типа
       else if (node.Token.Type == LexicalTypesEnum.Coercion && node.Children.Count == 1)
       {
         // Рекурсивно вычисляем выражение для дочернего узла
-        var operandResult = TraverseExpression(node.Children[0], codeBuilder);
-        if (operandResult.Any(char.IsLetter))
-        {
-          operandResult = $"<id,{symbolsDic.AddSymbol(operandResult, LexicalTypesEnum.Unknown)}>";
-        }
+        Token operandResult = TraverseExpression(node.Children[0]);
 
         // Генерируем временную переменную для результата преобразования
-        string tempVar = $"#T{tempVarCounter++}";
-        int idTempVar = symbolsDic.AddSymbol(tempVar, LexicalTypesEnum.FloatType);
-        codeBuilder.AppendLine($"{GenerationInstructionsEnum.i2f} <id,{idTempVar}> {operandResult}");
+        string tempVarName = $"#T{tempVarCounter++}";
+        int idTempVar = symbolsDic.AddSymbol(tempVarName, LexicalTypesEnum.FloatType);
+        
+        Token tempVar = new Token(LexicalTypesEnum.Identifier, tempVarName, idTempVar, LexicalTypesEnum.FloatType);
+
+        Instruction instruction = new Instruction(
+                    node.Token.Type,
+                    tempVar,
+                    new List<Token> { operandResult }
+                );
+
+        instructions.Add(instruction);
 
         return tempVar;
       }
@@ -99,29 +100,28 @@ namespace CompLabs.Generation
               node.Token.Type == LexicalTypesEnum.IntegerConstant ||
               node.Token.Type == LexicalTypesEnum.RealConstant)
       {
-        return Convert.ToString(node.Token.Value);
+        return node.Token;
       }
 
-      return string.Empty;
+      return null;
     }
 
     /// <summary>
     /// Генерация постфиксной записи (GEN2)
     /// </summary>
     /// <returns>Постфиксная запись</returns>
-    public string GeneratePostfixNotation()
+    public List<Token> GeneratePostfixNotation()
     {
       var postfixBuilder = new StringBuilder();
-      TraverseTreeForPostfix(syntaxTree.Root, postfixBuilder);
-      return postfixBuilder.ToString();
+      TraverseTreeForPostfix(syntaxTree.Root);
+      return this.postfixTokens;
     }
 
     /// <summary>
     /// Обход дерева для постфиксной записи
     /// </summary>
     /// <param name="node">Текущий узел дерева</param>
-    /// <param name="postfixBuilder">Строитель постфиксной записи</param>
-    private void TraverseTreeForPostfix(SyntaxTreeNode node, StringBuilder postfixBuilder)
+    private void TraverseTreeForPostfix(SyntaxTreeNode node)
     {
       if (node == null)
         return;
@@ -132,32 +132,40 @@ namespace CompLabs.Generation
         // Если узел бинарный (двухоперандный)
         if (node.Children.Count == 2)
         {
-          TraverseTreeForPostfix(node.Children[0], postfixBuilder); // Левый операнд
-          TraverseTreeForPostfix(node.Children[1], postfixBuilder); // Правый операнд
-          if (node.Token.Type == LexicalTypesEnum.Coercion)
-          {
-            postfixBuilder.Append($"<{GenerationInstructionsEnum.i2f}>");
-          } else
-          {
-            postfixBuilder.Append($"<{node.Token.Value}>");
-          }
+          TraverseTreeForPostfix(node.Children[0]); // Левый операнд
+          TraverseTreeForPostfix(node.Children[1]); // Правый операнд
+          //if (node.Token.Type == LexicalTypesEnum.Coercion)
+          //{
+          //  postfixBuilder.Append($"<{GenerationInstructionsEnum.i2f}>");
+          //} else
+          //{
+          //  postfixBuilder.Append($"<{node.Token.Value}>");
+          //}
+          postfixTokens.Add(node.Token);
         }
         // Если узел унарный (int2float)
         else if (node.Children.Count == 1)
         {
-          TraverseTreeForPostfix(node.Children[0], postfixBuilder); 
-          postfixBuilder.Append($"<{GenerationInstructionsEnum.i2f}>");
+          TraverseTreeForPostfix(node.Children[0]);
+          //postfixBuilder.Append($"<{GenerationInstructionsEnum.i2f}>");
+          postfixTokens.Add(node.Token);
         }
       }
-      // Если узел является идентификатором или константой
-      else if (node.Token.Type == LexicalTypesEnum.Identifier)      
+      else if (node.Token.Type == LexicalTypesEnum.Identifier ||
+                     node.Token.Type == LexicalTypesEnum.IntegerConstant ||
+                     node.Token.Type == LexicalTypesEnum.RealConstant)
       {
-        postfixBuilder.Append($"<id,{symbolsDic.AddSymbol(node.Token.Value, LexicalTypesEnum.Unknown)}>");
+        postfixTokens.Add(node.Token);
       }
-      else if (node.Token.Type == LexicalTypesEnum.IntegerConstant || node.Token.Type == LexicalTypesEnum.RealConstant)
-      {
-        postfixBuilder.Append($"<{node.Token.Value}>");
-      }
+      //// Если узел является идентификатором или константой
+      //else if (node.Token.Type == LexicalTypesEnum.Identifier)      
+      //{
+      //  postfixBuilder.Append($"<id,{symbolsDic.AddSymbol(node.Token.Value, LexicalTypesEnum.Unknown)}>");
+      //}
+      //else if (node.Token.Type == LexicalTypesEnum.IntegerConstant || node.Token.Type == LexicalTypesEnum.RealConstant)
+      //{
+      //  postfixBuilder.Append($"<{node.Token.Value}>");
+      //}
     }
 
 
