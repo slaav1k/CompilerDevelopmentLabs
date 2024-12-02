@@ -1,0 +1,5 @@
+mul <Id,3> <7> <Id,1>
+add <Id,4> <5> <Id,3>
+i2f <Id,3> <Id,4>
+i2f <Id,4> <Id,2>
+sub <Id,5> <Id,3> <Id,4>

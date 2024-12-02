@@ -1,0 +1,14 @@
+C:\Users\arkhi\source\repos\CompLab2\bin\Debug\net8.0\CompLab2.exe
+C:\Users\arkhi\source\repos\CompLab2\bin\Debug\net8.0\CompLab2.deps.json
+C:\Users\arkhi\source\repos\CompLab2\bin\Debug\net8.0\CompLab2.runtimeconfig.json
+C:\Users\arkhi\source\repos\CompLab2\bin\Debug\net8.0\CompLab2.dll
+C:\Users\arkhi\source\repos\CompLab2\bin\Debug\net8.0\CompLab2.pdb
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.AssemblyInfoInputs.cache
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.AssemblyInfo.cs
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.csproj.CoreCompileInputs.cache
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.dll
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\refint\CompLab2.dll
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.pdb
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\CompLab2.genruntimeconfig.cache
+C:\Users\arkhi\source\repos\CompLab2\obj\Debug\net8.0\ref\CompLab2.dll
