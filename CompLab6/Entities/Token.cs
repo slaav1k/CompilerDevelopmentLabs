@@ -55,12 +55,25 @@ namespace CompLabs.Entities
     /// Переопредленный метод toString()
     /// </summary>
     /// <returns>Форматированная строка</returns>
+    //public override string ToString()
+    //{
+    //  string subTypeString = SubType.HasValue ? SubType.Value.ToDetailedString() : "нет типа";
+    //  return Type == LexicalTypesEnum.Identifier
+    //  ? $"<{Type.ToDescribString()},{IdentifierID}> - {Type.ToDetailedString()} {Value} {subTypeString}"
+    //  : $"<{Value}> - {Type.ToDetailedString()}";
+    //}
+
     public override string ToString()
     {
+      string formattedValue = Value is double || Value is float
+          ? string.Format("{0:0.0####################}", Value)
+          : Value.ToString();
+
       string subTypeString = SubType.HasValue ? SubType.Value.ToDetailedString() : "нет типа";
       return Type == LexicalTypesEnum.Identifier
-      ? $"<{Type.ToDescribString()},{IdentifierID}> - {Type.ToDetailedString()} {Value} {subTypeString}"
-      : $"<{Value}> - {Type.ToDetailedString()}";
+          ? $"<{Type.ToDescribString()},{IdentifierID}> - {Type.ToDetailedString()} {formattedValue} {subTypeString}"
+          : $"<{formattedValue}> - {Type.ToDetailedString()}";
     }
+
   }
 }
