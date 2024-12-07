@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "rWqTm+01b+s=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\arkhi\\source\\repos\\CompLab7\\CompLabs.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\arkhi\\.nuget\\packages\\messagepack\\2.5.192\\messagepack.2.5.192.nupkg.sha512",
+    "C:\\Users\\arkhi\\.nuget\\packages\\messagepack.annotations\\2.5.192\\messagepack.annotations.2.5.192.nupkg.sha512",
+    "C:\\Users\\arkhi\\.nuget\\packages\\messagepackanalyzer\\2.5.192\\messagepackanalyzer.2.5.192.nupkg.sha512",
+    "C:\\Users\\arkhi\\.nuget\\packages\\microsoft.net.stringtools\\17.6.3\\microsoft.net.stringtools.17.6.3.nupkg.sha512"
+  ],
+  "logs": []
+}
