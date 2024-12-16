@@ -85,6 +85,7 @@ namespace Interpreter
 
           //Console.WriteLine($"Результат операции {instruction.Manual}: {result}, тип результата: {resultType}");
           Console.WriteLine($"Результат операции {instruction.Manual}: {Math.Round(result, 4)} ; тип результата: {resultType}");
+          //Console.WriteLine($"Результат операции {instruction.Manual}: " + string.Format("{0:0.0000}", result) + $" тип результата: {resultType}");
         }
         else if (instruction.Tokens.Count == 1) // Для унарных операций (например, отрицание)
         {
@@ -130,6 +131,13 @@ namespace Interpreter
           Console.WriteLine($"Результат операции {instruction.Manual}: {Math.Round(result, 4)} ; тип результата: {resultType}");
           //Console.WriteLine($"Результат операции {instruction.Manual}: " + string.Format("{0:0.0000}", result) + $" тип результата: {resultType}");
         }
+      }
+      if (instructions.Count > 0) {
+        var lastInstruction = instructions[instructions.Count - 1];
+        var result = lastInstruction.ResToken;
+
+        Console.WriteLine($"Итого: {Math.Round(symbolsDic[result.IdentifierID].Value, 4)}");
+        //Console.WriteLine($"Итого: {string.Format("{0:0.0000}", symbolsDic[result.IdentifierID].Value)}");
       }
     }
 
